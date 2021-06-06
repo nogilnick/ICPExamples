@@ -46,7 +46,7 @@ Y  = (DF['Survived'] == 1).values
 W  = np.ones(Y.shape[0])
 # %% Train ICPRE model
 t1  = time.time()
-IRE = ICPRuleEnsemble(mrg=1.0, maxIter=1000, lr=0.1, cOrd='r', tm='gbc',
+IRE = ICPRuleEnsemble(mrg=1.0, maxIter=1000, lr=0.01, cOrd='r', tm='gbc', nsd=0, xsd=16,
                       tmPar=dict(max_depth=1, min_impurity_decrease=1e-8), v=2)
 IRE.fit(A[trn], Y[trn], W[trn])
 t2  = time.time()
@@ -73,6 +73,7 @@ for i, (rli, vi) in enumerate(sorted(zip(rl, cv), key=lambda x : x[1])):
    print(' -Coef: {:+.6f}'.format(float(vi)))
    print(' -Pred: {:s}'.format(rli))
 # %% Print test results
+print('\nICPRE:')
 print('Trn: {:7.2%}'.format(Acc(Y[trn], YH[trn], sample_weight=W[trn])))
 print('Tst: {:7.2%}'.format(Acc(Y[tst], YH[tst], sample_weight=W[tst])))
 print('Elp: {:7.2f}s'.format(t2 - t1))
@@ -94,7 +95,8 @@ rfc = RandomForestClassifier().fit(A[trn], Y[trn], W[trn])
 t2  = time.time()
 YP2 = rfc.predict_proba(A)
 YH2 = YP2.argmax(1)
+print('\nRFC:')
 print('Trn: {:7.2%}'.format(Acc(Y[trn], YH2[trn], sample_weight=W[trn])))
 print('Tst: {:7.2%}'.format(Acc(Y[tst], YH2[tst], sample_weight=W[tst])))
-print('Elp: {:7.2f}s'.format(t2 - t1))
+print('Elp: {:6.2f}s'.format(t2 - t1))
 print('Nod: {:7d}'.format(sum(i.tree_.node_count for i in rfc.estimators_)))

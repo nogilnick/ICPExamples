@@ -1,10 +1,10 @@
-import matplotlib.pyplot as     mpl
-import numpy             as     np
-import pandas            as     pd
-from   sklearn.ensemble  import RandomForestClassifier
-from   sklearn.metrics   import accuracy_score as Acc
-from   SKStats           import SortedSplit
-from   ICP.Models        import ICPRuleEnsemble
+import matplotlib.pyplot       as     mpl
+import numpy                   as     np
+import pandas                  as     pd
+from   sklearn.ensemble        import RandomForestClassifier
+from   sklearn.metrics         import accuracy_score         as Acc
+from   sklearn.model_selection import train_test_split       as ShuffleSplit
+from   ICP.Models              import ICPRuleEnsemble
 import time
 
 # %% Load data
@@ -38,7 +38,7 @@ FEAT_COL = DF.dtypes[(DF.dtypes != 'object') & (~DF.columns.isin(skipCol))].inde
 print('\n'.join(FEAT_COL))
 # %% Setup data problem
 np.random.seed(0)
-trn, tst = SortedSplit(DF.shape[0])
+trn, tst = ShuffleSplit(np.arange(DF.shape[0]))
 
 fv = DF[FEAT_COL].iloc[trn].median()
 A  = DF[FEAT_COL].fillna(fv).astype('double').values

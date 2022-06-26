@@ -19,7 +19,7 @@ PyPi Project:
 
 ## Titanic 
 
-Sample code showing how to use ICPRE based on the popular Titanic dataset. See my blog post [https://nicholastsmith.wordpress.com/2021/05/29/icp-in-practice/](ICP in Practice) to follow along.
+Sample code showing how to use ICPRE based on the popular Titanic dataset. See my blog post [ICP in Practice](https://nicholastsmith.wordpress.com/2021/05/29/icp-in-practice) to follow along.
 
 ## Unit
 

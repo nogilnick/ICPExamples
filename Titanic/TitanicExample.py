@@ -46,12 +46,12 @@ Y  = (DF['Survived'] == 1).values
 W  = np.ones(Y.shape[0])
 # %% Train ICPRE model
 t1  = time.time()
-IRE = ICPRuleEnsemble(mrg=1.0, maxIter=1000, lr=1.2345, cOrd='r', tm='gbc', nsd=0, xsd=16,
-                      tmPar=dict(max_depth=1, min_impurity_decrease=1e-8), v=2)
+IRE = ICPRuleEnsemble(mrg=1.0, maxIter=1000, lr=1.2, cOrd='n', tm='gbc',
+                      tmPar=dict(max_depth=2, min_impurity_decrease=1e-8), v=2)
 IRE.fit(A[trn], Y[trn], W[trn])
 t2  = time.time()
 YP  = IRE.predict_proba(A)
-YH  = YP.argmax(1)
+YH  = YP > 0.5
 # %% Print explain output
 pn   = 258
 pExp = IRE.Explain(A[[pn]], FEAT_COL)[0]

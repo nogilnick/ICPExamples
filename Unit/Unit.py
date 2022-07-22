@@ -1,6 +1,7 @@
-import  numpy           as     np
-from    ICP.PathSearch  import FindDist
+from    ICP.PathSearch  import FindDist, FindDistCg
 from    ICP.Solver      import EPS, DERR_MAX, DEL, ErrHinge
+import  numpy           as     np
+from    time            import time
 
 def SlowCheck(A, Y, X, W, d):
    # Distance until target is hit
@@ -19,21 +20,22 @@ def SlowCheck(A, Y, X, W, d):
 eps0 = EPS
 eps1 = DERR_MAX
 eps2 = DEL
+
+tel  = 0.
 # %% Make sure ICP can find optimal distances for easy problems
 # Pre-allocate temporary vectors for search
-n    = 10
+n    = 30
 BVae = np.empty(n + 1)
 AWae = np.empty(n)
-AEsi = np.empty(n, np.intp)
+AEsi = np.empty(n + 1, np.intp)
 
 BVse = np.empty(n + 1)
 AWse = np.empty(n)
-SEsi = np.empty(n, np.intp)
-
-tmp = np.empty(n)
+SEsi = np.empty(n + 1, np.intp)
 
 rvs = np.empty(3) # Return values
-   
+
+elp = 0.
 for i in range(999):
    Y    = np.random.choice([-1., 1.], size=n)
    A    = Y  # Column has correct direction for each sample
@@ -45,8 +47,11 @@ for i in range(999):
    
    err  = ErrHinge(X, Y, W)
 
+   t0 = time()
    FindDist(A, n, Y, W, X, d, vMax, eps0, eps1, eps2, rvs,
-            BVae, AWae, AEsi, BVse, AWse, SEsi, tmp)
+            BVae, AWae, AEsi, BVse, AWse, SEsi)
+   elp += time() - t0
+   
    errRed, bDist, bSlack = rvs
    
    # Actual error reduction
@@ -58,21 +63,23 @@ for i in range(999):
    assert(np.isclose(actRed, errRed))
    assert(np.isclose(dTru, bDist))
    assert(np.isclose(vMax - bDist, bSlack))
+
+tel += elp
+print('Elapsed: {:.2f}'.format(elp))
 # %% Check that values beyond vMax are handled correctly
 # Pre-allocate temporary vectors for search
-n    = 10
+n    = 30
 BVae = np.empty(n + 1)
 AWae = np.empty(n)
-AEsi = np.empty(n, np.intp)
+AEsi = np.empty(n + 1, np.intp)
 
 BVse = np.empty(n + 1)
 AWse = np.empty(n)
-SEsi = np.empty(n, np.intp)
-
-tmp = np.empty(n)
+SEsi = np.empty(n + 1, np.intp)
 
 rvs = np.empty(3) # Return values
-   
+
+elp = 0.
 for i in range(999):
    Y    = np.random.choice([-1., 1.], size=n)
    A    = Y  # Column has correct direction for each sample
@@ -85,8 +92,10 @@ for i in range(999):
    
    err  = ErrHinge(X, Y, W)
 
+   t0 = time()
    FindDist(A, n, Y, W, X, d, vMax, eps0, eps1, eps2, rvs,
-            BVae, AWae, AEsi, BVse, AWse, SEsi, tmp)
+            BVae, AWae, AEsi, BVse, AWse, SEsi)
+   elp += time() - t0
    errRed, bDist, bSlack = rvs
    
    # Actual error reduction
@@ -95,21 +104,23 @@ for i in range(999):
    assert(np.isclose(actRed, errRed))
    assert(np.isclose(vMax, bDist))
    assert(np.isclose(vMax - bDist, bSlack))
+
+tel += elp
+print('Elapsed: {:.2f}'.format(elp))
 # %% Check that optimal value is found when all directions are wrong
 # Pre-allocate temporary vectors for search
-n    = 10
+n    = 30
 BVae = np.empty(n + 1)
 AWae = np.empty(n)
-AEsi = np.empty(n, np.intp)
+AEsi = np.empty(n + 1, np.intp)
 
 BVse = np.empty(n + 1)
 AWse = np.empty(n)
-SEsi = np.empty(n, np.intp)
-
-tmp = np.empty(n)
+SEsi = np.empty(n + 1, np.intp)
 
 rvs = np.empty(3) # Return values
-   
+
+elp = 0.
 for i in range(999):
    Y    = np.random.choice([-1., 1.], size=n)
    A    = Y
@@ -121,8 +132,10 @@ for i in range(999):
    
    err  = ErrHinge(X, Y, W)
 
+   t0 = time()
    FindDist(A, n, Y, W, X, d, vMax, eps0, eps1, eps2, rvs,
-            BVae, AWae, AEsi, BVse, AWse, SEsi, tmp)
+            BVae, AWae, AEsi, BVse, AWse, SEsi)
+   elp += time() - t0
    errRed, bDist, bSlack = rvs
    
    # Actual error reduction
@@ -131,21 +144,22 @@ for i in range(999):
    assert(np.isclose(actRed, errRed))
    assert(np.isclose(0., bDist))
    assert(np.isclose(vMax - bDist, bSlack))
+tel += elp
+print('Elapsed: {:.2f}'.format(elp))
 # %% Compare random instance to brute force solution
 # Pre-allocate temporary vectors for search
-n    = 10
+n    = 30
 BVae = np.empty(n + 1)
 AWae = np.empty(n)
-AEsi = np.empty(n, np.intp)
+AEsi = np.empty(n + 1, np.intp)
 
 BVse = np.empty(n + 1)
 AWse = np.empty(n)
-SEsi = np.empty(n, np.intp)
-
-tmp = np.empty(n)
+SEsi = np.empty(n + 1, np.intp)
 
 rvs = np.empty(3) # Return values
-   
+
+elp = 0.
 for i in range(999):
    Y    = np.random.choice([-1., 1.], size=n)
    A    = np.random.choice([-1., 1.], size=n)
@@ -159,8 +173,10 @@ for i in range(999):
    
    err  = ErrHinge(X, Y, W)
 
-   FindDist(A, n, Y, W, X, d, vMax, eps0, eps1, eps2, rvs,
-            BVae, AWae, AEsi, BVse, AWse, SEsi, tmp)
+   t0 = time()
+   FindDistCg(A, n, Y, W, X, d, vMax, eps0, eps1, eps2, rvs,
+            BVae, AWae, AEsi, BVse, AWse, SEsi)
+   elp += time() -t0
    errRed, bDist, bSlack = rvs
    
    if errRed >= 0:   # No error reduction possible in this dir; mark 0
@@ -179,5 +195,47 @@ for i in range(999):
    assert(np.isclose(actRed, errRed))
    assert(np.isclose(sErr, actRed))
    assert(np.isclose(vMax - bDist, bSlack))
+tel += elp
+print('Elapsed: {:.2f}'.format(elp))
+# %% Compare random instance to brute force solution
+# Pre-allocate temporary vectors for search
+n    = 50000
+BVae = np.empty(n + 1)
+AWae = np.empty(n)
+AEsi = np.empty(n + 1, np.intp)
+
+BVse = np.empty(n + 1)
+AWse = np.empty(n)
+SEsi = np.empty(n + 1, np.intp)
+
+rvs = np.empty(3) # Return values
+
+tml = []
+elp = 0.
+for i in range(999):
+   Y    = np.random.choice([-1., 1.], size=n)
+   A    = np.random.choice([-1., 1.], size=n)
+   X    = 2 * np.random.rand(n) - 1
+   W    = np.random.rand(n)
+   W   /= W.sum()
+   W    = np.full(n, 1 / n)
+   f    = 0
+   d    = np.random.choice([-1, 1])
+   vMax = 20
+   
+   err  = ErrHinge(X, Y, W)
+
+   t0 = time()
+   FindDistCg(A, n, Y, W, X, d, vMax, eps0, eps1, eps2, rvs,
+              BVae, AWae, AEsi, BVse, AWse, SEsi)
+   tml.append(time() - t0)
+
+elp  = sum(tml)
+tdv  = np.std(tml)
+tel += elp
+print('Elapsed: {:.4f}'.format(elp))
+print('Mean:    {:.4f}'.format(elp / len(tml)))
+print('Std:     {:.4f}'.format(tdv))
 # %% Print result
+print('Tot Elp: {:.2f}'.format(elp))
 print('SUCCESS')

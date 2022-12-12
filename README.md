@@ -1,12 +1,12 @@
 # ICPExamples
 Examples demonstrating use of the ICPOptimize package. The GitHub page for ICPOptimize is available here:
 
-[https://github.com/nicholastoddsmith/ICPOptimize](https://github.com/nicholastoddsmith/ICPOptimize)
+[https://github.com/nogilnick/ICPOptimize](https://github.com/nogilnick/ICPOptimize)
 
 
 Further discussion about and motivation for the package can be found on my blog: 
 
-[nicholastsmith.wordpress.com/2021/05/18/the-iterative-constrained-pathways-optimizer/](https://nicholastsmith.wordpress.com/2021/05/18/the-iterative-constrained-pathways-optimizer/)
+[nogilnick.github.io/Posts/63.html](https://nogilnick.github.io/Posts/63.html)
 
 
 Install via PyPi:
@@ -19,7 +19,7 @@ PyPi Project:
 
 ## Titanic 
 
-Sample code showing how to use ICPRE based on the popular Titanic dataset. See my blog post [ICP in Practice](https://nicholastsmith.wordpress.com/2021/05/29/icp-in-practice) to follow along.
+Sample code showing how to use ICPRE based on the popular Titanic dataset. See my blog post [ICP in Practice](https://nogilnick.github.io/Posts/64.html) to follow along.
 
 ## Unit
 
